@@ -6,87 +6,114 @@
     <title>Document</title>
     <style>
         /* General body styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('/static/addimg.jpg'); /* Add your image path here */
+            background-size: cover; /* Makes sure the image covers the entire body */
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
+        /* Form container styles */
+        form {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-/* Form label styles */
-label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    color: #333;
-}
+        form:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
 
-/* Input field styles */
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
+        /* Form label styles */
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
 
-/* Submit button styles */
-input[type="submit"] {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-}
+        /* Input field styles */
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
 
-input[type="submit"]:hover {
-    background-color: #218838;
-}
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
 
-/* Error message styles */
-div {
-    margin-bottom: 10px;
-}
+        /* Submit button styles */
+        input[type="submit"] {
+            background: linear-gradient(90deg, #28a745, #218838);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
 
-.error {
-    color: red;
-    font-size: 0.875rem;
-}
+        input[type="submit"]:hover {
+            background: linear-gradient(90deg, #218838, #28a745);
+            transform: scale(1.05);
+        }
 
+        /* Error message styles */
+        .error {
+            color: #e74c3c;
+            font-size: 0.875rem;
+            margin-top: -15px;
+            margin-bottom: 15px;
+        }
 
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            form {
+                padding: 20px;
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <form action="login" method="POST">
-        {{form.hidden_tag()}}
+        {{ form.hidden_tag() }}
         <div>
             {{ form.username.label }}
-            {{ form.username }} 
-            {% for error in form.username.errors %} 
-                {{ error }} 
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <div class="error">{{ error }}</div>
             {% endfor %}
         </div>
         <div>
             {{ form.password.label }}
-            {{ form.password }} 
-            {% for error in form.password.errors %} 
-                {{ error }} 
+            {{ form.password }}
+            {% for error in form.password.errors %}
+                <div class="error">{{ error }}</div>
             {% endfor %}
         </div>
         <div>

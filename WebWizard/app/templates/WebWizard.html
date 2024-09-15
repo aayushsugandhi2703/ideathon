@@ -149,6 +149,31 @@ body {
     font-weight: 400;
     font-style: normal;
   }
+  .countdown-container {
+            margin-top: 30px;
+            background-color: rgba(34, 34, 34, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            display: inline-block;
+            font-family: 'Eater', cursive;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .countdown-timer {
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .countdown-label {
+            font-size: 2.5rem;
+            color: orange;
+        }
+
+        #countdown-text {
+            font-size: 2rem;
+            animation: pulse 1.5s infinite;
+        }
 
     </style>
 </head>
@@ -173,22 +198,32 @@ body {
         <!-- Main content with navigation -->
         <div class="main-content">
             <h2 class="eater-regular">Dayananda Sagar University Presents Spooky Party</h2>
+            <div class="countdown-container"></div>
+                <div class="countdown-timer" id="countdown">
+                    <div class="countdown-label">Until Halloween</div>
+                    <div id="countdown-text"></div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- JS for Animations -->
     <script>
-        document.querySelector('.login-btn').addEventListener('click', () => {
-            alert('Login functionality coming soon!');
-        });
+        const target = new Date('2024-10-01T00:00:00');
+        function updateCountdown() {
+            const currentDate = new Date();
+            const timeDifference = target - currentDate;
 
-        document.querySelector('.signup-btn').addEventListener('click', () => {
-            alert('Signup functionality coming soon!');
-        });
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 
-        document.querySelector('.contact-btn').addEventListener('click', () => {
-            alert('Contact us at [Your Email]!');
-        });
-    </script>
+            document.getElementById('countdown-text').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            setTimeout(updateCountdown, 1000);
+        }
+        updateCountdown();
+</script>
+    
 </body>
 </html>

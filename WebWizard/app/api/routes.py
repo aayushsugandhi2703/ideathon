@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, make_response, session 
+from flask import Blueprint, render_template, redirect, url_for, flash, make_response, session,current_app
 from flask_jwt_extended import create_access_token, create_refresh_token    
 from app.Models.models import User, Session, Contact
 from app.Forms.forms import LoginForm, RegisterForm, ContactForm
@@ -25,6 +25,8 @@ def Login():
     if form.validate_on_submit():
         user = Session.query(User).filter_by(username=form.username.data).first()
         if user and check_password_hash(user.password, form.password.data):
+            current_app.logger.info(f"User {form.username.data} logged in successfully")
+
             session['user_id'] = user.id
             login_user(user)
 
@@ -38,6 +40,8 @@ def Login():
             return response 
         else:
             flash('Invalid username or password')
+            current_app.logger.info(f"User {form.username.data} login unsuccessfully")
+
     return render_template('Login.html', form=form)
 
 
@@ -80,17 +84,16 @@ def adds():
     if form.validate_on_submit():
         try:
             user_id = session.get('user_id')
-            contact = Contact(name=form.name.data, phone=form.phone.data, amount = form.amount.data ,user_id=user_id)
+            contact = Contact(name=form.name.data, phone=form.phone.data, amount=form.amount.data ,user_id=user_id)
             Session.add(contact)  
-            Session.commit()   
-            flash('Contact added successfully', 'success')
+            Session.commit() 
+            current_app.logger.info(f"User {user_id} added a contact")
+            flash('Registered successfully', 'success')
             return redirect(url_for('api.adds'))
         except:
             Session.rollback()
-            flash('Failed to add contact', 'danger')
+            flash('Failed to add', 'danger')
             return redirect(url_for('api.Login'))
     else:
-        Session.rollback() 
-        flash('Failed to add contact', 'danger')        
-    return render_template('Add.html', form=form)
+        return render_template('Add.html', form=form)
 
