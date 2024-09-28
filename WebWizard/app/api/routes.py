@@ -6,10 +6,32 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_login import login_user, logout_user, login_required
+from flask_caching import Cache
 
 api_bp = Blueprint('api', __name__)
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["5 per minute"])
+
+cache = Cache()  # Initialize Cache here
+cache.init_app(current_app)
+
+# this is for caching in redis usaign batch process
+def fetch(batch_size, offset=0):
+    return Session.query(User).limit(batch_size).offset(offset).all()
+
+def ingest(batch_size, offset=0):
+    users = fetch(batch_size, offset)
+    if not users:
+        return False
+    data = {f'user:{user.id}': {"username": user.username} for user in users}
+    cache.mset(data)
+    offset += batch_size
+    current_app.logger.info(f"Ingested {len(users)} users into cache from offset {offset - batch_size} to {offset}.")
+
+@api_bp.route('/ingest_users', methods=['GET'])
+def ingest_users():
+    ingest(batch_size=100)
+    return "User data has been ingested into Redis cache."
 
 # This function will redirect the user to the login page
 @api_bp.route('/', methods=['GET'])

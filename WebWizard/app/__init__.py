@@ -7,6 +7,7 @@ from logging.handlers import RotatingFileHandler
 from flask_login import LoginManager
 from app.Models.models import User, Session
 import os
+from flask_caching import Cache
 
 jwt = JWTManager()
 def create_app():
@@ -46,6 +47,10 @@ def create_app():
         app.logger.info('App startup')
 
     setup_logger(app.logger)
+
+# for caching
+    cache = Cache(app)
+    cache.init_app(app)
 
 #import the blueprints
     from app.api.routes import api_bp
